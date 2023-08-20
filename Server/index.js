@@ -3,20 +3,18 @@ import cors from 'cors';
 import http from 'http';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
+import { userRoutes } from './routes/user-routes.js';
 
 dotenv.config();
 
 connectDB();
 
 const app = express();
+const serverHttp = http.createServer(app);
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-
-const serverHttp = http.createServer(app);
-
-app.get('/', (req, res) => {
-    res.send("Hello, World");
-});
+app.use("/user",userRoutes);
 
 serverHttp.listen(5000,() => console.log("Server is started on port 5000"));
