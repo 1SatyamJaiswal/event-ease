@@ -50,7 +50,6 @@ export const registerUser = asyncHandler(async (req,res) => {
 
 export const loginUser = asyncHandler(async (req, res) => {
     const {email,password} = req.body;
-    console.log("Extracted fields: ", email, password);
 
     const user = await User.findOne({email: email});
 
@@ -67,3 +66,22 @@ export const loginUser = asyncHandler(async (req, res) => {
         throw new Error('Invalid credentials');
     }
 })
+
+export const getUser = asyncHandler(async (req, res) => {
+    const {user_id} = req.body;
+
+    const user = await User.findOne({_id: user_id});
+
+    if( user_id ) {
+        res.json({
+           _id: user.id,
+           name: user.name,
+           age: user.age,
+           city: user.city,
+           email: user.email 
+        });
+    } else {
+        res.status(400);
+        throw new Error('Invalid credentials');
+    }
+});

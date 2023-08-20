@@ -144,7 +144,7 @@ const AuthForm = () => {
   
 
   return (
-    <div className="flex flex-col bg-base-200 relative h-[100vh] max-h-[800px]">
+    <div className="flex flex-col bg-base-200 relative h-[80vh] max-h-[800px]">
       <div className="flex flex-col card min-w-[300px] max-w-2xl bg-base-100 items-center absolute top-[5%] left-[50%] transform translate-x-[-50%] text-gray-800">
         {isLogin ? (
           <div className="card-body">
