@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import { userRoutes } from './routes/user-routes.js';
 import { eventRoutes } from './routes/event-routes.js';
+import { registrationRoutes } from './routes/registration-routes.js';
 
 dotenv.config();
 
@@ -18,5 +19,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use("/user",userRoutes);
 app.use("/event",eventRoutes);
+app.use("/register",registrationRoutes);
 
 serverHttp.listen(5000,() => console.log("Server is started on port 5000"));

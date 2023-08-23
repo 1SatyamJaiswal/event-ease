@@ -70,16 +70,36 @@ export const editEvent = asyncHandler(async (req, res) => {
   }
 });
 
-export const allEvent = asyncHandler(async (req,res) => {
-  const events = await Event.find().populate('owner');
-  if(events){
-    if(events.length > 0){
+export const allEvent = asyncHandler(async (req, res) => {
+  const today = new Date();
+
+  const events = await Event.find().populate(
+    "owner"
+  );
+
+  if (events) {
+    if (events.length > 0) {
       res.status(200).json(events);
     } else {
-      res.status(200).json({message: 'No events found'});
+      res.status(200).json({ message: "No events found" });
     }
   } else {
     res.status(500);
-    throw new Error('Failded to find event');
+    throw new Error("Failed to find events");
   }
-}) 
+});
+
+export const getEvent = asyncHandler(async (req, res) => {
+  const event_id = req.params.event_id;
+  const updatedEvent = await Event.findOneAndUpdate(
+    { _id: event_id },
+    { $inc: { impressions: 1 } },
+    { new: true }
+  ).populate("owner");
+
+  if (updatedEvent) {
+    res.status(200).json(updatedEvent);
+  } else {
+    res.status(404).json({ message: "Event not found" });
+  }
+});
