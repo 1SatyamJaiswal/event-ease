@@ -69,3 +69,17 @@ export const editEvent = asyncHandler(async (req, res) => {
     throw new Error("Error Updating Event");
   }
 });
+
+export const allEvent = asyncHandler(async (req,res) => {
+  const events = await Event.find().populate('owner');
+  if(events){
+    if(events.length > 0){
+      res.status(200).json(events);
+    } else {
+      res.status(200).json({message: 'No events found'});
+    }
+  } else {
+    res.status(500);
+    throw new Error('Failded to find event');
+  }
+}) 

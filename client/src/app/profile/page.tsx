@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import Cookies from "js-cookie";
+import Events from "@/components/Events";
 
 type DialogProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -25,6 +26,7 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
   const [age, setAge] = useState(0);
+  const [id,setId] = useState('');
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [user, setUser] = useState<UserData>({
     name: "example",
@@ -41,6 +43,7 @@ const Profile = () => {
       window.location.href = "/auth";
       return;
     }
+    setId(_id);
     const fetchData = async () => {
       try {
         const response = await fetch("http://localhost:5000/user/info/" + _id, {
@@ -115,7 +118,7 @@ const Profile = () => {
   };
   return (
     <div className="flex flex-col items-center bg-base-200">
-      <div className="card card-side w-96 bg-base-100 my-10 shadow-xl">
+      <div className="card card-side w-[100vw] max-w-[384px] bg-base-100 my-10 shadow-xl">
         {isLoading ? (
           <span className="loading py-10 text-center loading-bars loading-md"></span>
         ) : (
@@ -216,6 +219,7 @@ const Profile = () => {
           </>
         )}
       </div>
+      <Events user_id={id}/>
       <ToastContainer />
     </div>
   );

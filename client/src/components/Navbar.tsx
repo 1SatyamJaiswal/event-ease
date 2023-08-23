@@ -5,6 +5,10 @@ import Cookies from "js-cookie";
 
 const Navbar = () => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const handleLogout = () => {
+    Cookies.remove("_id");
+    setIsUserLoggedIn(false);
+  };
   useEffect(() => {
     const user_id = Cookies.get("_id");
     setIsUserLoggedIn(!!user_id);
@@ -42,6 +46,9 @@ const Navbar = () => {
             <li>
               <Link href="#">About</Link>
             </li>
+            {isUserLoggedIn && (<li>
+              <button onClick={handleLogout}>Logout</button>
+            </li>)}
           </ul>
         </div>
       </div>
