@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import Cookies from "js-cookie";
 import Events from "@/components/Events";
+import EventsList from "@/components/EventsList";
 
 type DialogProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -28,6 +29,7 @@ const Profile = () => {
   const [age, setAge] = useState(0);
   const [id,setId] = useState('');
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [registeredEvents, setRegisteredEvents] = useState([]);
   const [user, setUser] = useState<UserData>({
     name: "example",
     age: 0,
@@ -62,11 +64,27 @@ const Profile = () => {
         console.error(error);
       }
     };
+    const fetchRegistrationData = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/register/getAll/" + _id, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        setRegisteredEvents(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
+    }
     fetchData();
+    fetchRegistrationData();
     if (isFormSubmitted) {
       setIsFormSubmitted(false);
     }
-  }, [isFormSubmitted]);
+  }, [isFormSubmitted,id]);
   const handleUpdateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -220,6 +238,8 @@ const Profile = () => {
         )}
       </div>
       <Events user_id={id}/>
+      <h2>Registered Events</h2>
+      <EventsList events={registeredEvents} />
       <ToastContainer />
     </div>
   );

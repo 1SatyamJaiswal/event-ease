@@ -76,3 +76,18 @@ export const removeRegistration = asyncHandler(async (req, res) => {
     throw new Error("Internal server error");
   }
 });
+
+export const getAllRegistered = asyncHandler(async (req,res)=>{
+  const user_id = req.params.user_id;
+  try{
+    const registeredEvents = await Registration.find({ participant: user_id}).populate('event');
+    if (registeredEvents.length > 0) {
+      res.status(200).json(registeredEvents);
+    } else {
+      res.status(404).json([]);
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error("Internal server error");
+  }
+}) 

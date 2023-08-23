@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -19,7 +20,7 @@ export default function Home() {
               excepturi exercitationem quasi. In deleniti eaque aut repudiandae
               et a id nisi.
             </p>
-            <button className="btn btn-primary">Get Started</button>
+            <Link href="/events"><button className="btn btn-primary">Get Started</button></Link>
           </div>
         </div>
       </div>

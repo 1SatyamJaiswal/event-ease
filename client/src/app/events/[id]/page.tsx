@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const EventsPage = () => {
   const eventPath = usePathname();
@@ -109,9 +111,27 @@ const EventsPage = () => {
           },
         });
         const data = await response.json();
+        toast.success("Registered for Event Successfully!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         setIsRegistered(true);
       } catch (error) {
         console.error(error);
+        toast.error("Failed to register for the event!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
   };
 
@@ -129,9 +149,27 @@ const EventsPage = () => {
           },
         });
         const data = await response.json();
+        toast.success("Unregistered for Event Successfully!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         setIsRegistered(false);
       } catch (error) {
         console.error(error);
+        toast.error("Failed to unregister for the event!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
   }
   return (
@@ -209,6 +247,7 @@ const EventsPage = () => {
           )}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

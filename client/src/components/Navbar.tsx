@@ -38,13 +38,10 @@ const Navbar = () => {
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
             <li>
-              <Link href="#">Homepage</Link>
+              <Link href="/">Homepage</Link>
             </li>
             <li>
-              <Link href="#">Portfolio</Link>
-            </li>
-            <li>
-              <Link href="#">About</Link>
+              <Link href="/events">Events</Link>
             </li>
             {isUserLoggedIn && (<li>
               <button onClick={handleLogout}>Logout</button>

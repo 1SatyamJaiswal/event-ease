@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 const AuthForm = () => {
 
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState("");
@@ -66,6 +68,7 @@ const AuthForm = () => {
       const now = new Date();
       const expiryDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
       Cookies.set("_id", _id, { expires: expiryDate, path: "/" });
+      router.push('/');
     } catch (error) {
       console.error("Error occurred during API request:", error);
       toast.error("Login failed. Please try again.", {
