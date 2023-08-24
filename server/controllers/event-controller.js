@@ -103,3 +103,18 @@ export const getEvent = asyncHandler(async (req, res) => {
     res.status(404).json({ message: "Event not found" });
   }
 });
+
+export const getMyEvent = asyncHandler(async(req,res)=>{
+  const owner = req.params.user_id;
+  try{
+    const yourEvents = await Event.find({ owner: owner});
+    if(yourEvents.length>0){
+      res.status(200).json(yourEvents);
+    } else {
+      res.status(404).json({message: "You have not hosted any event"});
+    }
+  } catch (e) {
+    res.status(500);
+    throw new Error('Internal server error');
+  }
+}) 

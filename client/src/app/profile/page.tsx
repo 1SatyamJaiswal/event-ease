@@ -6,6 +6,7 @@ import Image from "next/image";
 import Cookies from "js-cookie";
 import Events from "@/components/Events";
 import EventsList from "@/components/EventsList";
+import EventsListYour from "@/components/EventsListYour";
 
 type DialogProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -27,9 +28,10 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
   const [age, setAge] = useState(0);
-  const [id,setId] = useState('');
+  const [id, setId] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [registeredEvents, setRegisteredEvents] = useState([]);
+  const [createdEvents, setCreatedEvents] = useState([]);
   const [user, setUser] = useState<UserData>({
     name: "example",
     age: 0,
@@ -66,14 +68,35 @@ const Profile = () => {
     };
     const fetchRegistrationData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/register/getAll/" + _id, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          "http://localhost:5000/register/getAll/" + _id,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         const data = await response.json();
         setRegisteredEvents(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const fetchCreatedEvents = async() => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/event/get-event/" + _id,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+        setCreatedEvents(data);
         setIsLoading(false);
       } catch (error) {
         console.error(error);
@@ -81,10 +104,11 @@ const Profile = () => {
     }
     fetchData();
     fetchRegistrationData();
+    fetchCreatedEvents();
     if (isFormSubmitted) {
       setIsFormSubmitted(false);
     }
-  }, [isFormSubmitted,id]);
+  }, [isFormSubmitted, id]);
   const handleUpdateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -237,9 +261,19 @@ const Profile = () => {
           </>
         )}
       </div>
-      <Events user_id={id}/>
+      <Events user_id={id} />
       <h2>Registered Events</h2>
-      <EventsList events={registeredEvents} />
+      {registeredEvents.length > 0 ? (
+        <EventsList events={registeredEvents} />
+      ) : (
+        <h2 className="mb-3">No registrations</h2>
+      )}
+      <h2>Created Events</h2>
+      {createdEvents.length > 0 ? (
+        <EventsListYour events={createdEvents} />
+      ) : (
+        <h2 className="mb-3">No Events hosted yet</h2>
+      )}
       <ToastContainer />
     </div>
   );
