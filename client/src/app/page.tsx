@@ -16,9 +16,7 @@ export default function Home() {
           <div className="max-w-[700px]">
             <h1 className="mb-5 text-5xl font-bold">Explore All Nearby Events</h1>
             <p className="mb-5">
-              Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-              excepturi exercitationem quasi. In deleniti eaque aut repudiandae
-              et a id nisi.
+              Explore the latest upcoming events and register for them easily.
             </p>
             <Link href="/events"><button className="btn btn-primary">Get Started</button></Link>
           </div>
