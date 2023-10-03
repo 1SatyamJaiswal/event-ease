@@ -68,7 +68,7 @@ const AuthForm = () => {
       const now = new Date();
       const expiryDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
       Cookies.set("_id", _id, { expires: expiryDate, path: "/" });
-      router.push('/');
+      window.location.href = '/profile';
     } catch (error) {
       console.error("Error occurred during API request:", error);
       toast.error("Login failed. Please try again.", {

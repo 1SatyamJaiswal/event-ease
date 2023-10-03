@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 
 const Navbar = () => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [username,setUserName] = useState('');
   const handleLogout = () => {
     Cookies.remove("_id");
     setIsUserLoggedIn(false);
@@ -12,7 +13,24 @@ const Navbar = () => {
   useEffect(() => {
     const user_id = Cookies.get("_id");
     setIsUserLoggedIn(!!user_id);
-  }, []);
+    if(isUserLoggedIn){
+      const fetchData = async () => {
+        try {
+          const response = await fetch("http://localhost:5000/user/info/" + user_id, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await response.json();
+          setUserName(data.name);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      fetchData();
+    }
+  }, [isUserLoggedIn]);
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -57,22 +75,7 @@ const Navbar = () => {
       <div className="navbar-end">
         {isUserLoggedIn ? (
           <Link className="btn btn-ghost btn-circle" href="/profile">
-            <div className="indicator">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                />
-              </svg>
-            </div>
+            {username}
           </Link>
         ) : (
           <Link href="/auth">Login</Link>

@@ -349,7 +349,7 @@ const EventsPage = () => {
             Registration Deadline:{" "}
             {new Date(event.registration_date).toLocaleDateString()}
           </p>
-          <p>Owner: {event.owner.name}</p>
+          <p>Organizer: {event.owner.name}</p>
           <div className="stats stats-vertical lg:stats-horizontal shadow">
             <div className="stat">
               <div className="stat-figure text-primary">
