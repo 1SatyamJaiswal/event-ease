@@ -12,7 +12,7 @@ const Navbar = () => {
   };
   useEffect(() => {
     const user_id = Cookies.get("_id");
-    setIsUserLoggedIn(!!user_id);
+    setIsUserLoggedIn(Boolean(user_id));
     if(isUserLoggedIn){
       const fetchData = async () => {
         try {
