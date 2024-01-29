@@ -17,7 +17,7 @@ export const addEvent = asyncHandler(async (req, res) => {
     event_date,
     registration_date,
     description,
-    img_name,
+    img_url: img_name,
     owner: user_id,
   });
 
@@ -117,4 +117,16 @@ export const getMyEvent = asyncHandler(async(req,res)=>{
     res.status(500);
     throw new Error('Internal server error');
   }
-}) 
+})
+
+export const deleteEvent = asyncHandler(async (req, res) => {
+  const event_id = req.params.event_id;
+  try {
+    const event = await Event.deleteOne({ _id: event_id });
+    res.status(200).json({ message: "Event deleted successfully" });
+  } catch (error) {
+    res.status(500);
+    console.log(error);
+    throw new Error("Error Deleting Event");
+  }
+});

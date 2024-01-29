@@ -30,7 +30,7 @@ const EventsPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/event/getEvents", {
+        const response = await fetch("http://localhost:5000/event", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

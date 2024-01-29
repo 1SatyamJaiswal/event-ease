@@ -12,6 +12,7 @@ const Navbar = () => {
   };
   useEffect(() => {
     const user_id = Cookies.get("_id");
+    const token = Cookies.get("token");
     setIsUserLoggedIn(!!user_id);
     if(isUserLoggedIn){
       const fetchData = async () => {
@@ -20,6 +21,7 @@ const Navbar = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
+              "x-access-token": token || "",
             },
           });
           const data = await response.json();

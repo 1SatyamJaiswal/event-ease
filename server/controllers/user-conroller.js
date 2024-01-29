@@ -1,6 +1,7 @@
 import User from "../model/User.js";
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, age, city, email, password } = req.body;
@@ -35,12 +36,20 @@ export const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "30d",
+      }
+    );
     res.status(200).json({
-      _id: user.id,
-      name: user.name,
-      age: user.age,
-      city: user.city,
-      email: user.email,
+      auth: true,
+      token: token,
+      id: user._id,
+      message: "User created successfully",
     });
   } else {
     res.status(400);
@@ -54,12 +63,20 @@ export const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: email });
 
   if (user && (await bcrypt.compare(password, user.password))) {
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "30d",
+      }
+    );
     res.json({
-      _id: user.id,
-      name: user.name,
-      age: user.age,
-      city: user.city,
-      email: user.email,
+      auth: true,
+      token: token,
+      id: user._id,
+      message: 'User logged in successfully'
     });
   } else {
     res.status(400);
@@ -69,26 +86,42 @@ export const loginUser = asyncHandler(async (req, res) => {
 
 export const getUser = asyncHandler(async (req, res) => {
   const user_id = req.params.user_id;
-
-  const user = await User.findOne({ _id: user_id });
-
-  if (user_id) {
-    res.json({
-      _id: user.id,
+  const token = req.headers["x-access-token"];
+  if(!token) {
+    return res.status(401).json({ auth: false, message: 'No token provided.' });
+  }
+  jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
+    if (err) {
+      return res.status(500).json({ auth: false, message: 'Failed to authenticate token.' });
+    }
+  });
+  try{
+    const user = await User.findById(user_id);
+    res.status(200).json({
+      _id: user._id,
       name: user.name,
       age: user.age,
       city: user.city,
       email: user.email,
     });
-  } else {
-    res.status(400);
-    throw new Error("Invalid credentials");
+  } catch (e) {
+    res.status(500);
+    throw new Error("Error getting user");
   }
 });
 
 export const editUser = asyncHandler(async (req, res) => {
   const user_id = req.params.user_id;
   const { name, age, city } = req.body;
+  const token = req.headers["x-access-token"];
+  if(!token) return res.status(401).json({ auth: false, message: 'No token provided.' });
+  jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
+    if (err) {
+      return res.status(500).json({ auth: false, message: 'Failed to authenticate token.' });
+    } else if (decoded.id !== user_id) {
+      return res.status(500).json({ auth: false, message: 'Failed to authenticate token.' });
+    }
+  });
   try {
     const user = await User.updateOne(
       { _id: user_id },

@@ -69,7 +69,7 @@ const EventsPage = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/event/get/" + eventId,
+          "http://localhost:5000/event/" + eventId,
           {
             method: "GET",
             headers: {

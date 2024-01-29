@@ -54,7 +54,7 @@ const AuthForm = () => {
       const data = await response.json();
       console.log("API Response:", data);
 
-      const { _id } = data;
+      const { id, token } = data;
 
       toast.success("Login successful!", {
         position: "top-center",
@@ -67,7 +67,8 @@ const AuthForm = () => {
       });
       const now = new Date();
       const expiryDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-      Cookies.set("_id", _id, { expires: expiryDate, path: "/" });
+      Cookies.set("_id", id, { expires: expiryDate, path: "/" });
+      Cookies.set("token", token, { expires: expiryDate, path: "/" });
       window.location.href = '/profile';
     } catch (error) {
       console.error("Error occurred during API request:", error);

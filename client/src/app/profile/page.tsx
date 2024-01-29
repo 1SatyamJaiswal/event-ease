@@ -43,6 +43,7 @@ const Profile = () => {
     const imageUrl = `/pfps/${randomImageNumber}.jpg`;
     setImageUrl(imageUrl);
     const _id = Cookies.get("_id");
+    const token = Cookies.get("token");
     if (!_id) {
       window.location.href = "/auth";
       return;
@@ -54,6 +55,7 @@ const Profile = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "x-access-token": token || "",
           },
         });
         const data = await response.json();
@@ -74,6 +76,7 @@ const Profile = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
+              "x-access-token": token || "",
             },
           }
         );
@@ -87,7 +90,7 @@ const Profile = () => {
     const fetchCreatedEvents = async() => {
       try {
         const response = await fetch(
-          "http://localhost:5000/event/get-event/" + _id,
+          "http://localhost:5000/event/user/" + _id,
           {
             method: "GET",
             headers: {
@@ -113,6 +116,7 @@ const Profile = () => {
     e.preventDefault();
 
     const _id = Cookies.get("_id");
+    const token = Cookies.get("token");
     const apiUrl = "http://localhost:5000/user/edit/" + _id;
 
     const requestBody = {
@@ -126,6 +130,7 @@ const Profile = () => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          "x-access-token": token || "",
         },
         body: JSON.stringify(requestBody),
       });
