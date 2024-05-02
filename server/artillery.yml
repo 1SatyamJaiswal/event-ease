@@ -1,0 +1,11 @@
+config:
+  target: "http://localhost:8000"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+
+scenarios:
+  - name: "Getting all the event details"
+    flow:
+      - get:
+          url: "/event/"

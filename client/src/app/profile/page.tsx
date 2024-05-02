@@ -51,7 +51,7 @@ const Profile = () => {
     setId(_id);
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/user/info/" + _id, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/info/` + _id, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -71,7 +71,7 @@ const Profile = () => {
     const fetchRegistrationData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/register/getAll/" + _id,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/register/getAll/` + _id,
           {
             method: "GET",
             headers: {
@@ -90,7 +90,7 @@ const Profile = () => {
     const fetchCreatedEvents = async() => {
       try {
         const response = await fetch(
-          "http://localhost:5000/event/user/" + _id,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/event/user/` + _id,
           {
             method: "GET",
             headers: {
@@ -117,7 +117,7 @@ const Profile = () => {
 
     const _id = Cookies.get("_id");
     const token = Cookies.get("token");
-    const apiUrl = "http://localhost:5000/user/edit/" + _id;
+    const apiUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/edit/` + _id;
 
     const requestBody = {
       name: name,

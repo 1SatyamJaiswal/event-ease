@@ -1,9 +1,10 @@
 import Event from "../model/Event.js";
 import asyncHandler from "express-async-handler";
+import redisClient from "../config/redis.js";
 
 export const addEvent = asyncHandler(async (req, res) => {
   const user_id = req.params.user_id;
-
+  console.log("/event/"+user_id);
   const { name, event_date, registration_date, description, img_name } =
     req.body;
 
@@ -40,7 +41,7 @@ export const addEvent = asyncHandler(async (req, res) => {
 
 export const editEvent = asyncHandler(async (req, res) => {
   const event_id = req.params.event_id;
-
+  console.log("/event/"+event_id);
   const { name, event_date, registration_date, description, img_name } =
     req.body;
 
@@ -72,20 +73,26 @@ export const editEvent = asyncHandler(async (req, res) => {
 
 export const allEvent = asyncHandler(async (req, res) => {
   const today = new Date();
+  console.log("/event/");
 
-  const events = await Event.find().populate(
-    "owner"
-  );
+  try {
+    let eventsData = await redisClient.get("events");
 
-  if (events) {
-    if (events.length > 0) {
-      res.status(200).json(events);
+    if (eventsData !== null) {
+      res.status(200).json(JSON.parse(eventsData));
     } else {
-      res.status(200).json({ message: "No events found" });
+      const events = await Event.find().populate("owner");
+
+      if (events.length > 0) {
+        res.status(200).json(events);
+      } else {
+        res.status(200).json({ message: "No events found" });
+      }
+      redisClient.setEx("events", 120, JSON.stringify(events));
     }
-  } else {
-    res.status(500);
-    throw new Error("Failed to find events");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -107,11 +114,18 @@ export const getEvent = asyncHandler(async (req, res) => {
 export const getMyEvent = asyncHandler(async(req,res)=>{
   const owner = req.params.user_id;
   try{
-    const yourEvents = await Event.find({ owner: owner});
-    if(yourEvents.length>0){
-      res.status(200).json(yourEvents);
+    const events = await redisClient.get("events/owner/"+owner);
+
+    if(events !== null){
+      res.status(200).json(JSON.parse(events));
     } else {
-      res.status(404).json({message: "You have not hosted any event"});
+      const yourEvents = await Event.find({ owner: owner }).populate("owner");
+      if(yourEvents.length>0){
+        res.status(200).json(yourEvents);
+      } else {
+        res.status(404).json({message: "You have not hosted any event"});
+      }
+      redisClient.setEx("events/owner/"+owner, 120, JSON.stringify(yourEvents));
     }
   } catch (e) {
     res.status(500);
@@ -130,3 +144,41 @@ export const deleteEvent = asyncHandler(async (req, res) => {
     throw new Error("Error Deleting Event");
   }
 });
+
+export const lockEvent = asyncHandler(async (req, res) => {
+  const event_id = req.params.event_id;
+  try {
+    const event = await Event.updateOne(
+      { _id: event_id },
+      {
+        $set: {
+          lock: true,
+        },
+      }
+    );
+    res.status(200).json({ message: "Event locked successfully" });
+  } catch (error) {
+    res.status(500);
+    console.log(error);
+    throw new Error("Error Locking Event");
+  }
+});
+
+export const unlockEvent = asyncHandler(async (req, res) => {
+  const event_id = req.params.event_id;
+  try {
+    const event = await Event.updateOne(
+      { _id: event_id },
+      {
+        $set: {
+          lock: false,
+        },
+      }
+    );
+    res.status(200).json({ message: "Event unlocked successfully" });
+  } catch (error) {
+    res.status(500);
+    console.log(error);
+    throw new Error("Error Unlocking Event");
+  }
+});  

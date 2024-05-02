@@ -69,7 +69,7 @@ const EventsPage = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/event/" + eventId,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/event/` + eventId,
           {
             method: "GET",
             headers: {
@@ -97,7 +97,7 @@ const EventsPage = () => {
     };
     const fetchRegisterData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/register/get", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/register/get`, {
           method: "POST",
           body: JSON.stringify(requestBody),
           headers: {
@@ -122,7 +122,7 @@ const EventsPage = () => {
       event_id: eventId,
     };
     try {
-      const response = await fetch("http://localhost:5000/register/add", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/register/add`, {
         method: "POST",
         body: JSON.stringify(requestBody),
         headers: {
@@ -160,7 +160,7 @@ const EventsPage = () => {
       event_id: eventId,
     };
     try {
-      const response = await fetch("http://localhost:5000/register/remove", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/register/remove`, {
         method: "PATCH",
         body: JSON.stringify(requestBody),
         headers: {
@@ -192,10 +192,92 @@ const EventsPage = () => {
     }
   };
 
+  const lockEvent = async () => {
+    const requestBody = {
+      event_id: eventId,
+    };
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/event/lock/`+eventId, {
+        method: "PATCH",
+        body: JSON.stringify(requestBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      toast.success("Event Locked Successfully!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to lock the event!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  const unlockEvent = async () => {
+    const requestBody = {
+      event_id: eventId,
+    };
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/event/unlock/`+eventId, {
+        method: "PATCH",
+        body: JSON.stringify(requestBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      toast.success("Event Unlocked Successfully!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to unlock the event!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  const closeEventModal = () => {
+    setIsEventModalOpen(false);
+    unlockEvent();
+  };
+
+  const editModalOpen = () => {
+    setIsEventModalOpen(true);
+    lockEvent();
+  };
+
   const handleEventSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const apiUrl = "http://localhost:5000/event/edit/" + eventId;
+    const apiUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/event/edit/` + eventId;
 
     const eventData = {
       name: eventName,
@@ -248,7 +330,7 @@ const EventsPage = () => {
           <div className="modal-box">
             <button
               className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-              onClick={() => setIsEventModalOpen(false)}
+              onClick={closeEventModal}
             >
               ✕
             </button>
@@ -324,7 +406,7 @@ const EventsPage = () => {
             {isOwner && (
               <button
                 className="btn btn-square btn-sm"
-                onClick={() => setIsEventModalOpen(true)}
+                onClick={editModalOpen}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

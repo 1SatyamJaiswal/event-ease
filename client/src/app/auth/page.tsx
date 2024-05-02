@@ -29,7 +29,7 @@ const AuthForm = () => {
     console.log("Logging in with email:", email, "and password:", password);
   
     // Construct your API endpoint URL
-    const apiUrl = "http://localhost:5000/user/login"; // Replace this with your actual API endpoint
+    const apiUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/login`; // Replace this with your actual API endpoint
   
     // Construct the request body (if needed)
     const requestBody = {
@@ -95,7 +95,7 @@ const AuthForm = () => {
       password
     );
   
-    const apiUrl = "http://localhost:5000/user";
+    const apiUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/user`;
   
     const requestBody = {
       name: name,

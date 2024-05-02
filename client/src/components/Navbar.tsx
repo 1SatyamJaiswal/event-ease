@@ -17,7 +17,7 @@ const Navbar = () => {
     if(isUserLoggedIn){
       const fetchData = async () => {
         try {
-          const response = await fetch("http://localhost:5000/user/info/" + user_id, {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/info/` + user_id, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",

@@ -23,7 +23,7 @@ const Events = ({ user_id = "string" }) => {
     e.preventDefault();
 
     const _id = Cookies.get("_id");
-    const apiUrl = "http://localhost:5000/event/add-event/" + _id;
+    const apiUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/event/add-event/` + _id;
 
     const eventData = {
       name: eventName,

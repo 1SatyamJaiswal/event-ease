@@ -24,20 +24,22 @@ const EventsPage = () => {
     registrations: number;
     img_name: string;
     owner: Owner;
+    lock: boolean;
     __v: number;
   }
   const [events, setEvents] = useState<Event[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/event", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/event`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
         });
         const data = await response.json();
-        setEvents(data);
+        const filterData = data.filter((event: Event) => !event.lock);
+        setEvents(filterData);
       } catch (error) {
         console.error(error);
       }
